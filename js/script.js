@@ -113,48 +113,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Project card hover effect - add subtle tilt
-projectCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
-        
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
-    });
-});
-
-// Typing effect for hero subtitle (optional enhancement)
-const heroSubtitle = document.querySelector('.hero-subtitle');
-if (heroSubtitle) {
-    const text = heroSubtitle.textContent;
-    heroSubtitle.textContent = '';
-    let index = 0;
-    
-    function typeWriter() {
-        if (index < text.length) {
-            heroSubtitle.textContent += text.charAt(index);
-            index++;
-            setTimeout(typeWriter, 100);
-        }
-    }
-    
-    // Start typing effect after page load
-    window.addEventListener('load', () => {
-        setTimeout(typeWriter, 500);
-    });
-}
-
 // Add active state styling
 const style = document.createElement('style');
 style.textContent = `
@@ -191,3 +149,93 @@ document.head.appendChild(style);
 console.log('%c👋 Hi there!', 'font-size: 20px; font-weight: bold; color: #6366f1;');
 console.log('%cThanks for checking out my portfolio!', 'font-size: 14px; color: #8b5cf6;');
 console.log('%cLet\'s create something amazing together! 🚀', 'font-size: 14px; color: #cbd5e1;');
+
+// FAQ Accordion
+document.addEventListener('DOMContentLoaded', () => {
+  const faqItems = document.querySelectorAll('.faq-item');
+  
+  faqItems.forEach(item => {
+    const question = item.querySelector('.faq-question');
+    
+    question.addEventListener('click', () => {
+      // Close other items
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item) {
+          otherItem.classList.remove('active');
+        }
+      });
+      
+      // Toggle current item
+      item.classList.toggle('active');
+    });
+  });
+});
+
+// Project Carousel Navigation
+document.addEventListener('DOMContentLoaded', () => {
+  let currentProject = 0;
+  const projectCards = document.querySelectorAll('.project-card-carousel');
+  const projectsContainer = document.querySelector('.projects-container');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  // Debug
+  console.log('Project Cards:', projectCards.length);
+  console.log('Projects Container:', projectsContainer);
+  console.log('Prev Btn:', prevBtn);
+  console.log('Next Btn:', nextBtn);
+
+  if (!projectsContainer || projectCards.length === 0) {
+    console.warn('Carousel elements not found');
+    return;
+  }
+
+  // Initialize - show first project
+  showProject(0);
+
+  function showProject(index) {
+    // Wrap around
+    if (index >= projectCards.length) {
+      currentProject = 0;
+    } else if (index < 0) {
+      currentProject = projectCards.length - 1;
+    } else {
+      currentProject = index;
+    }
+    
+    console.log('Current Project:', currentProject);
+    
+    // Translate container
+    const offset = -currentProject * 100;
+    projectsContainer.style.transform = `translateX(${offset}%)`;
+  }
+
+  // Event listeners for carousel buttons
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('Prev clicked');
+      showProject(currentProject - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('Next clicked');
+      showProject(currentProject + 1);
+    });
+  }
+
+  // Optional: Add keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      console.log('Arrow Left pressed');
+      showProject(currentProject - 1);
+    }
+    if (e.key === 'ArrowRight') {
+      console.log('Arrow Right pressed');
+      showProject(currentProject + 1);
+    }
+  });
+});
