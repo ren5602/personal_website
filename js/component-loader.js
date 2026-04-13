@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadComponent('./component/hero.html', '#hero-container');
     await loadComponent('./component/about.html', '#about-container');
     await loadComponent('./component/projects.html', '#projects-container');
+    await loadComponent('./component/gallery.html', '#gallery-container');
     await loadComponent('./component/problems.html', '#problems-container');
     await loadComponent('./component/contact.html', '#contact-container');
     await loadComponent('./component/footer.html', '#footer-container');
@@ -123,4 +124,45 @@ function initializeScripts() {
             item.classList.toggle('active');
         });
     });
+
+    // Gallery Image Preview Modal
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const galleryModal = document.getElementById('galleryModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalClose = document.querySelector('.modal-close');
+
+    if (galleryItems.length > 0 && galleryModal && modalImage && modalClose) {
+        // Open modal when gallery item is clicked
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                modalImage.src = img.src;
+                modalImage.alt = img.alt;
+                galleryModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            });
+        });
+
+        // Close modal when close button is clicked
+        modalClose.addEventListener('click', () => {
+            galleryModal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Allow scrolling
+        });
+
+        // Close modal when clicking outside the image
+        galleryModal.addEventListener('click', (e) => {
+            if (e.target === galleryModal) {
+                galleryModal.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Allow scrolling
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && galleryModal.classList.contains('active')) {
+                galleryModal.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Allow scrolling
+            }
+        });
+    }
 }
